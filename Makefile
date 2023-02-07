@@ -1,10 +1,8 @@
 CC        = g++
-CFLAGS    = -Wall -Ofast
+CFLAGS    = -Ofast -Wall
 SDIR      = code
 O         = obj
 EXE       = bff
-LIB       = libbffproject.so.0.1
-LIBS      = -ldl
 
 .PHONY: all clean clean.lib
 
@@ -14,17 +12,15 @@ OBJS= \
 	$(O)/bff.o \
 	$(O)/bff_parse.o \
 	$(O)/bff_parse_element.o \
+	$(O)/bff_compile.o
 
 $(O)/%.o: $(SDIR)/bff_file/%.cpp
-	$(CC) $(CFLAGS) -shared -fPIC -o $@ -c $<
+	$(CC) $(CFLAGS) -o $@ -c $<
 $(O)/main.o: main.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-$(LIB): $(OBJS)
-	$(CC) $(CFLAGS) -shared -fPIC $(OBJS) -o $(LIB)
-
-$(EXE): $(O)/main.o $(LIB)
-	$(CC) $(CFLAGS) $(OBJS) $(O)/main.o -o $(EXE) $(LIBS)
+$(EXE): $(OBJS) $(O)/main.o
+	$(CC) $(CFLAGS) $(OBJS) $(O)/main.o -o $(EXE)
 
 clean:
 	rm $(O)/main.o
@@ -32,4 +28,3 @@ clean:
 
 clean.lib:
 	rm -rf $(OBJS)
-	rm $(LIB)
